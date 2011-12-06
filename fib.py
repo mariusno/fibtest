@@ -27,7 +27,7 @@ class MainPage(webapp.RequestHandler):
       </html>""")
 
 class RunFib(webapp.RequestHandler):
-	#Method 1:
+	#Method 1, recursive
 	def fib(self, a, b, i, j):
 		if j>i:
 			return
@@ -35,20 +35,32 @@ class RunFib(webapp.RequestHandler):
 		self.response.out.write(str(c)+" ")
 		self.fib(b, c, i, j+1)
 
-	#Method 2, (to recursive):
+	#Method 2, recursive (to recursive):
 	def fib2(self, n):
 		if n == 0: return 0
 		elif n == 1: return 1
 		else: 
 			a = self.fib2(n-1)+self.fib2(n-2)
 			return a
-
+	#Method 3, iterative
+	def fibi(self, n):
+		a = 0
+		b = 1
+		for i in xrange(n):
+			c = a+b
+			a = b
+			b = c
+			self.response.out.write(str(c)+" ")
+			
 	def post(self):
 		greeting = Greeting()
 		self.response.out.write('<html><body>')
 		antall = self.request.get('content')
 		self.response.out.write("Regner ut for "+antall+" antall fib-tall <br/>")
-		self.fib(1,1,int(antall),1)	
+		#self.fib(0,1,int(antall),1)	
+		self.response.out.write('<br/>')
+		self.fibi(int(antall))	
+		
 		#self.response.out.write("prover andre</br>")
 		#a = self.fib2(int(antall))	
 		#self.response.out.write(a)
