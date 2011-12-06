@@ -27,6 +27,7 @@ class MainPage(webapp.RequestHandler):
       </html>""")
 
 class RunFib(webapp.RequestHandler):
+	#Method 1:
 	def fib(self, a, b, i, j):
 		if j>i:
 			return
@@ -34,13 +35,24 @@ class RunFib(webapp.RequestHandler):
 		self.response.out.write(str(c)+" ")
 		self.fib(b, c, i, j+1)
 
+	#Method 2, (to recursive):
+	def fib2(self, n):
+		if n == 0: return 0
+		elif n == 1: return 1
+		else: 
+			a = self.fib2(n-1)+self.fib2(n-2)
+			return a
 
 	def post(self):
 		greeting = Greeting()
 		self.response.out.write('<html><body>')
 		antall = self.request.get('content')
-		self.response.out.write("Regner ut for "+antall+" antall fib-tall<br/>")
+		self.response.out.write("Regner ut for "+antall+" antall fib-tall <br/>")
 		self.fib(1,1,int(antall),1)	
+		#self.response.out.write("prover andre</br>")
+		#a = self.fib2(int(antall))	
+		#self.response.out.write(a)
+		self.response.out.write('</html></body>')
 
 application = webapp.WSGIApplication([
   ('/', MainPage),
