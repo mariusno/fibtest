@@ -1,30 +1,21 @@
 #!/usr/bin/env python
 
-import cgi
-import datetime
 import wsgiref.handlers
-
-from google.appengine.ext import db
-from google.appengine.api import users
 from google.appengine.ext import webapp
 
-class Greeting(db.Model):
-  author = db.UserProperty()
-  content = db.StringProperty(multiline=True)
-  date = db.DateTimeProperty(auto_now_add=True)
-
-
 class MainPage(webapp.RequestHandler):
-  def get(self):
-    self.response.out.write('<html><body>')
-
-    self.response.out.write("""
-          <form action="/fib" method="post">
-            <div><input name="content" </input></div>
-            <div><input type="submit" value="Calculate"></div>
-          </form>
-        </body>
-      </html>""")
+	def get(self):
+		self.response.out.write("""
+			<html><body>
+			<h1>Fibonacci printer</h2>
+			How long should the counter print numbers?<br/>
+			<form action="/fib" method="post">
+        		<div><input name="content" </input></div>
+        		<div><input type="submit" value="Calculate"></div>
+       		 	</form>
+    			</body>
+      			</html>
+		""")
 
 class RunFib(webapp.RequestHandler):
 	#Method 1, recursive
@@ -32,16 +23,19 @@ class RunFib(webapp.RequestHandler):
 		if j>i:
 			return
 		c = a + b
-		self.response.out.write(str(c)+" ")
+		self.response.out.write(str(c)+", ")
 		self.fib(b, c, i, j+1)
 
 	#Method 2, recursive (to recursive):
 	def fib2(self, n):
-		if n == 0: return 0
-		elif n == 1: return 1
+		if n == 0: 
+			return 0
+		elif n == 1: 
+			return 1
 		else: 
 			a = self.fib2(n-1)+self.fib2(n-2)
 			return a
+
 	#Method 3, iterative
 	def fibi(self, n):
 		a = 0
@@ -50,21 +44,15 @@ class RunFib(webapp.RequestHandler):
 			c = a+b
 			a = b
 			b = c
-			self.response.out.write(str(c)+" ")
-			
+			self.response.out.write(str(c)+", ")
+
+	#post method, will be called when MainPage does a post
 	def post(self):
-		greeting = Greeting()
 		self.response.out.write('<html><body>')
 		antall = self.request.get('content')
-		self.response.out.write("Regner ut for "+antall+" antall fib-tall <br/>")
-		#self.fib(0,1,int(antall),1)	
-		self.response.out.write('<br/>')
+		self.response.out.write("Calculating the fibonacci-sequence for "+antall+" numbers: <br/><br/>")
 		self.fibi(int(antall))	
-		
-		#self.response.out.write("prover andre</br>")
-		#a = self.fib2(int(antall))	
-		#self.response.out.write(a)
-		self.response.out.write('</html></body>')
+		self.response.out.write('</body></html>')
 
 application = webapp.WSGIApplication([
   ('/', MainPage),
